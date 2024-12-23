@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, send_file
 import os
 from moviepy.video.io.VideoFileClip import VideoFileClip
+from moviepy.video.fx.resize import resize
 from backend.main import SubtitleRemover
 import cv2
 
@@ -18,12 +19,18 @@ def compress_video(input_path, output_path, target_size_mb=20, resolution=(720, 
     使用 moviepy 压缩视频。
     """
     try:
+        # 加载视频文件
         clip = VideoFileClip(input_path)
+
+        # 计算目标比特率 (bps)
         duration_seconds = clip.duration
         target_bitrate = (target_size_mb * 8 * 1024 * 1024) / duration_seconds
         target_bitrate = f"{int(target_bitrate / 1000)}k"
 
-        resized_clip = clip.resize(height=resolution[1]).set_fps(fps)
+        # 调整分辨率和帧率
+        resized_clip = resize(clip, height=resolution[1]).set_fps(fps)
+
+        # 输出压缩视频
         resized_clip.write_videofile(
             output_path,
             codec="libx264",
