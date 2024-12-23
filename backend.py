@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_file
 import os
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from backend.main import SubtitleRemover
+import cv2
 
 app = Flask(__name__)
 
