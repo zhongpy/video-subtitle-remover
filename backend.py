@@ -33,6 +33,7 @@ def compress_video(input_path, output_path, target_size_mb=20, resolution=(720, 
         )
         clip.close()
     except Exception as e:
+        print(f"compress_video error occurred: {str(e)}")
         raise RuntimeError(f"Video compression failed: {str(e)}")
 
 
@@ -46,9 +47,9 @@ def process_video(video_path, output_path):
     w_p = 1.0  # (xmax - xmin) 相对于 frame_width 的比例
     subtitle_area=(0.64375, 0.19166, 0.0, 1.0)
     try:
-        video_cap = cv2.VideoCapture(file_path)
+        video_cap = cv2.VideoCapture(video_path)
         if video_cap is None:
-            continue
+            raise FileNotFoundError("cv2.VideoCapture failed. Processed file not found.")
         if video_cap.isOpened():
             ret, frame = video_cap.read()
             frame_height = video_cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
