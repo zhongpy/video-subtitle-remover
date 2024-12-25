@@ -48,11 +48,11 @@ def process_video(video_path, output_path):
     """
     使用 SubtitleRemover 处理视频，并进行压缩。
     """
-    y_p = 0.64375  # ymin 相对于 frame_height 的比例
-    h_p = 0.19166  # (ymax - ymin) 相对于 frame_height 的比例
+    y_p = 0.6  # ymin 相对于 frame_height 的比例
+    h_p = 0.35  # (ymax - ymin) 相对于 frame_height 的比例
     x_p = 0.0  # xmin 相对于 frame_width 的比例
     w_p = 1.0  # (xmax - xmin) 相对于 frame_width 的比例
-    subtitle_area=(0.64375, 0.19166, 0.0, 1.0)
+    subtitle_area=(0.6, 0.35, 0.0, 1.0)
     try:
         video_cap = cv2.VideoCapture(video_path)
         if video_cap is None:
@@ -85,6 +85,8 @@ def process_video(video_path, output_path):
         raise FileNotFoundError("Subtitle removal failed. Processed file not found.")
 
     compress_video(processed_video_path, output_path, target_size_mb=20, resolution=(720, 1280), fps=30)
+    if os.path.exists(processed_video_path):
+        os.remove(processed_video_path)
     return output_path
 
 
@@ -105,7 +107,7 @@ def process():
 
     # 保存上传的文件
     file.save(input_path)
-
+    compressed_video_path=""
     try:
         # 调用视频处理函数
         compressed_video_path = process_video(input_path, os.path.join(PROCESSED_FOLDER, file.filename))
@@ -123,8 +125,10 @@ def process():
         # 清理临时文件
         if os.path.exists(input_path):
             os.remove(input_path)
+        if os.path.exists(compressed_video_path):
+            os.remove(compressed_video_path)
 
 
 if __name__ == '__main__':
     print("Backend service running on http://127.0.0.1:5000")
-    app.run(debug=True, port=5000)
+    app.run(host="0.0.0.0",debug=True, port=5000)
