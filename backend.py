@@ -85,8 +85,6 @@ def process_video(video_path, output_path):
         raise FileNotFoundError("Subtitle removal failed. Processed file not found.")
 
     compress_video(processed_video_path, output_path, target_size_mb=20, resolution=(720, 1280), fps=30)
-    if os.path.exists(processed_video_path):
-        os.remove(processed_video_path)
     return output_path
 
 
@@ -125,8 +123,6 @@ def process():
         # 清理临时文件
         if os.path.exists(input_path):
             os.remove(input_path)
-        if os.path.exists(compressed_video_path):
-            os.remove(compressed_video_path)
 
 
 if __name__ == '__main__':
